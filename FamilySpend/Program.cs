@@ -14,14 +14,14 @@ builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<ZipUserDbContext>(
-    options => options.UseNpgsql("Host=localhost;Port=5432;Database=FamilySpend;Username=postgres;Password=postgres;"));
+//builder.Services.AddDbContext<ZipUserDbContext>(
+  //  options => options.UseNpgsql("Host=localhost;Port=5432;Database=FamilySpend;Username=postgres;Password=postgres;"));
 builder.Services.AddDbContext<FamilySpendDbContext>(
     options => options.UseNpgsql("Host=localhost;Port=5432;Database=FamilySpend;Username=postgres;Password=postgres;"));
 
 builder.Services.AddAuthorization();
 builder.Services.AddIdentityApiEndpoints<ZipUser>()
-    .AddEntityFrameworkStores<ZipUserDbContext>();
+    .AddEntityFrameworkStores<FamilySpendDbContext>();
 
 // Create and configure mediator
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));

@@ -1,9 +1,10 @@
 using FamilySpend.Infra.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace FamilySpend.Infra.Context;
 
-public class FamilySpendDbContext :  DbContext
+public class FamilySpendDbContext : IdentityDbContext<ZipUser>
 {
     // The constructor accepts options configuration (like connection strings)
     public FamilySpendDbContext(DbContextOptions<FamilySpendDbContext> options) : base(options)
@@ -39,11 +40,5 @@ public class FamilySpendDbContext :  DbContext
                 p.FamilyUserId
             })
             .IsUnique();
-        
-        modelBuilder.Entity<FamilyLink>()
-            .HasOne(b => b.ZipUser)          // Book has one Author reference navigation
-            .WithMany(a => a.FamilyLinks)         // Author has many Books collection navigation
-            .HasForeignKey(b => b.FamilyUserId) // Specifies the Foreign Key column
-            .OnDelete(DeleteBehavior.Cascade);
     }
 }

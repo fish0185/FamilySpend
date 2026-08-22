@@ -33,6 +33,7 @@ public class InvitationCommandHandler(
         {
             UserId = newUser.Id,
             Balance = 0,
+            ZipUser = newUser
         });
         
         await familySpendDbContext.SaveChangesAsync(cancellationToken);

@@ -26,6 +26,7 @@ public class CreatePrimaryUserCommandHandler(UserManager<ZipUser> userManager, F
         {
             Balance = 1000,
             UserId = newUser.Id,
+            ZipUser = newUser
         });
         
         await dbContext.SaveChangesAsync(cancellationToken);

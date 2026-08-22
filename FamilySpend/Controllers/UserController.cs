@@ -29,7 +29,7 @@ public class UserController : ControllerBase
         return Ok();
     }
     
-    [HttpPost]
+    [HttpGet]
     public async Task<IActionResult> GetCurrentUser(GetCurrentUserCommand command, CancellationToken cancellationToken)
     {
         var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier).Value;

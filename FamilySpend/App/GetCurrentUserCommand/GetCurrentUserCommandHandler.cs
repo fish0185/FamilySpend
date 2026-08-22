@@ -5,28 +5,37 @@ using Microsoft.EntityFrameworkCore;
 namespace FamilySpend.App.GetCurrentUserCommand;
 
 public class GetCurrentUserCommandHandler(
-    FamilySpendDbContext familySpendDbContext, ZipUserDbContext zipUserDbContext) : IRequestHandler<GetCurrentUserCommand, GetCurrentUserResponse>
+    FamilySpendDbContext familySpendDbContext) : IRequestHandler<GetCurrentUserCommand, GetCurrentUserResponse>
 {
     public async Task<GetCurrentUserResponse> Handle(GetCurrentUserCommand request, CancellationToken cancellationToken)
     {
-        var currentUser = await zipUserDbContext.Users.FindAsync(request.CurrentUserId, cancellationToken);
+        var currentUser = await familySpendDbContext.Users.Include(x => x.Loan)
+            .Where(x => x.Id == request.CurrentUserId)
+            .FirstAsync(cancellationToken);
         if (!currentUser.IsPrimary)
         {
             return new GetCurrentUserResponse
             {
                 Email = currentUser.Email,
+                Balance = currentUser.Loan.Balance,
                 IsPrimaryAccount = false,
-                SubAccountEmails = []
+                SubAccounts = Enumerable.Empty<SubAccountResponse>()
             };
         }
 
-        var links = await familySpendDbContext.FamilyLinks.Where(x => x.UserId == request.CurrentUserId)
-            .Include(x => x.ZipUser).ToListAsync(cancellationToken);
+        var links = (await familySpendDbContext.FamilyLinks.Where(x => x.UserId == request.CurrentUserId)
+            .ToListAsync(cancellationToken)).Select(x => x.FamilyUserId);
+        var users = await familySpendDbContext.Users.Include(x=>x.Loan).Where(x=> links.Contains(x.Id)).ToListAsync(cancellationToken);
         return new GetCurrentUserResponse
         {
             Email = currentUser.Email,
             IsPrimaryAccount = true,
-            SubAccountEmails = links.Select(x => x.ZipUser.Email).ToArray()
+            Balance = currentUser.Loan.Balance,
+            SubAccounts = users.Select(x => new SubAccountResponse
+            {
+                Balance = x.Loan.Balance,
+                Email = x.Email,
+            }).ToArray()
         };
     }
 }
