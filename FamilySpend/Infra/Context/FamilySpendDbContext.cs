@@ -40,5 +40,12 @@ public class FamilySpendDbContext : IdentityDbContext<ZipUser>
                 p.FamilyUserId
             })
             .IsUnique();
+        
+        modelBuilder.Entity<UserOrderCategory>().HasIndex(p => new
+            {
+                p.UserId,
+                p.OrderCategoryId
+            })
+            .IsUnique();
     }
 }

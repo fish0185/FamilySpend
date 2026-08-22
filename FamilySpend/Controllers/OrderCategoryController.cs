@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using FamilySpend.App.AddUserOrderCategoryCommand;
+using FamilySpend.App.DeleteUserOrderCategoryCommand;
 using FamilySpend.App.GetCategoriesCommand;
 using FamilySpend.App.GetTransactionsCommand;
 using MediatR;
@@ -33,14 +34,16 @@ public class OrderCategoryController(IMediator mediator) : ControllerBase
         return Ok();
     }
     
-    /*[HttpDelete("user/{email}")]
-    public async Task<IActionResult> RemoveUserOrderCategories(string email, [FromQuery] string category, CancellationToken cancellationToken)
+    [HttpDelete("user")]
+    public async Task<IActionResult> RemoveUserOrderCategories([FromQuery]string email, [FromQuery] string category, CancellationToken cancellationToken)
     {
         var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-        var response = await mediator.Send(new GetTransactionsCommand
+        await mediator.Send(new DeleteUserOrderCategoryCommand
         {
-            UserId = nameIdentifier
+            UserId = nameIdentifier,
+            SubAccountEmail = email,
+            CategoryName = category
         }, cancellationToken);
-        return Ok(response);
-    }*/
+        return Ok();
+    }
 }
