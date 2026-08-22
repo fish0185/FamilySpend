@@ -13,6 +13,16 @@ public class FamilySpendDbContext :  DbContext
     // Each DbSet represents a table in the database
     public DbSet<FamilyLink> FamilyLinks { get; set; }
     
+    public DbSet<Loan> Loans { get; set; }
+    
+    public DbSet<Transaction> Transactions { get; set; }
+    
+    public DbSet<Order> Orders { get; set; }
+    
+    public DbSet<OrderCategory> OrderCategories { get; set; }
+    
+    public DbSet<UserOrderCategory> UserOrderCategories { get; set; }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -29,5 +39,11 @@ public class FamilySpendDbContext :  DbContext
                 p.FamilyUserId
             })
             .IsUnique();
+        
+        modelBuilder.Entity<FamilyLink>()
+            .HasOne(b => b.ZipUser)          // Book has one Author reference navigation
+            .WithMany(a => a.FamilyLinks)         // Author has many Books collection navigation
+            .HasForeignKey(b => b.FamilyUserId) // Specifies the Foreign Key column
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

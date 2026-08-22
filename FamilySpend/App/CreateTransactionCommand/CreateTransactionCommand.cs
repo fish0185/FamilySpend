@@ -6,7 +6,7 @@ namespace FamilySpend.App.CreateTransactionCommand;
 
 public class CreateTransactionCommand : IRequest
 {
-    public string UserId { get; set; }
+    public string? UserId { get; set; }
     public int OrderCategoryId { get; set; }
     public decimal Amount { get; set; }
     public TransactionType TransactionType { get; set; }

@@ -1,3 +1,6 @@
+using System.Security.Claims;
+using FamilySpend.App.AllocateFundingCommand;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,16 +9,19 @@ namespace FamilySpend.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
-public class FundingController : ControllerBase
+public class FundingController(IMediator mediator) : ControllerBase
 {
-    [HttpPost("/allocate")]
-    public IActionResult AllocateFunding(int amount, int accountId)
+    [HttpPost("allocate")]
+    public async Task<IActionResult> AllocateFunding(AllocateFundingCommand  command,  CancellationToken cancellationToken)
     {
         // add funding to sub-account
-        return Ok(new[] { "Product 1", "Product 2" });
+        var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        command.FromUserId = nameIdentifier;
+        await mediator.Send(command, cancellationToken);
+        return Ok();
     }
     
-    [HttpPost("/add")]
+    [HttpPost("add")]
     public IActionResult AddFunding(int amount)
     {
         // talk to payment gateway

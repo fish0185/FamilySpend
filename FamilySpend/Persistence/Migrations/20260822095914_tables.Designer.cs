@@ -3,6 +3,7 @@ using System;
 using FamilySpend.Infra.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FamilySpend.Persistence.Migrations
 {
     [DbContext(typeof(FamilySpendDbContext))]
-    partial class FamilySpendDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260822095914_tables")]
+    partial class tables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -163,8 +166,6 @@ namespace FamilySpend.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderId");
-
                     b.ToTable("Transactions");
                 });
 
@@ -193,17 +194,6 @@ namespace FamilySpend.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserOrderCategories");
-                });
-
-            modelBuilder.Entity("FamilySpend.Infra.Entities.Transaction", b =>
-                {
-                    b.HasOne("FamilySpend.Infra.Entities.Order", "Order")
-                        .WithMany()
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Order");
                 });
 #pragma warning restore 612, 618
         }

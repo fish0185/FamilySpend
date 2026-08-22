@@ -1,4 +1,10 @@
+using System.Security.Claims;
+using FamilySpend.App.CreatePrimaryUserCommand;
+using FamilySpend.App.GetCurrentUserCommand;
+using FamilySpend.Infra.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamilySpend.Controllers;
@@ -8,9 +14,27 @@ namespace FamilySpend.Controllers;
 [Authorize]
 public class UserController : ControllerBase
 {
-    [HttpPost]
-    public async Task<IActionResult> CreatePrimaryUser()
+    private readonly IMediator _mediator;
+
+    public UserController(IMediator mediator)
     {
-        return Ok(new[] { "Product 1", "Product 2" });
+        _mediator = mediator;
+    }
+    
+    [HttpPost]
+    [AllowAnonymous]
+    public async Task<IActionResult> CreatePrimaryUser(CreatePrimaryUserCommand command, CancellationToken cancellationToken)
+    {
+        await _mediator.Send(command, cancellationToken);
+        return Ok();
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> GetCurrentUser(GetCurrentUserCommand command, CancellationToken cancellationToken)
+    {
+        var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        command.CurrentUserId = nameIdentifier;
+        var response = await _mediator.Send(command, cancellationToken);
+        return Ok(response);
     }
 }

@@ -7,4 +7,5 @@ public class FamilyLink : BaseEntity
 {
     public string UserId { get; set; }
     public string FamilyUserId { get; set; }
+    public ZipUser ZipUser { get; set; }
 }

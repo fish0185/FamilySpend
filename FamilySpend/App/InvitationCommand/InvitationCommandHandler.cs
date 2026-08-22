@@ -7,7 +7,6 @@ namespace FamilySpend.App.InvitationCommand;
 
 public class InvitationCommandHandler(
     UserManager<ZipUser> userManager, 
-    ZipUserDbContext zipUserDbContext,
     FamilySpendDbContext familySpendDbContext)
     : IRequestHandler<InvitationCommand>
 {
@@ -29,6 +28,13 @@ public class InvitationCommandHandler(
             UserId = request.Id,
             FamilyUserId = newUser.Id,
         });
+        
+        familySpendDbContext.Loans.Add(new Loan()
+        {
+            UserId = newUser.Id,
+            Balance = 0,
+        });
+        
         await familySpendDbContext.SaveChangesAsync(cancellationToken);
     }
 }
