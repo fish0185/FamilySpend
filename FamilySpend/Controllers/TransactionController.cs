@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using FamilySpend.App.CreateTransactionCommand;
+using FamilySpend.App.GetTransactionsCommand;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,9 +13,14 @@ namespace FamilySpend.Controllers;
 public class TransactionController(IMediator mediator) : ControllerBase
 {
     [HttpGet]
-    public IActionResult Get()
+    public async Task<IActionResult> GetTransactions(CancellationToken cancellationToken)
     {
-        return Ok(new[] { "Product 1", "Product 2" });
+        var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        var response = await mediator.Send(new GetTransactionsCommand
+        {
+            UserId = nameIdentifier
+        }, cancellationToken);
+        return Ok(response);
     }
     
     [HttpPost]
