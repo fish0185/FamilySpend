@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using FamilySpend.App.AddFundingCommand;
 using FamilySpend.App.AllocateFundingCommand;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -21,11 +22,11 @@ public class FundingController(IMediator mediator) : ControllerBase
         return Ok();
     }
     
-    [HttpPost("add")]
-    public IActionResult AddFunding(int amount)
+    [HttpPost("add/{amount:int}")]
+    public async Task<IActionResult> AddFunding(int amount)
     {
-        // talk to payment gateway
-        // add funding to balance
-        return Ok(new[] { "Product 1", "Product 2" });
+        var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        await mediator.Send(new AddFundingCommand() { Amount = amount, UserId = nameIdentifier}, CancellationToken.None);
+        return Ok();
     }
 }
