@@ -6,18 +6,11 @@ namespace FamilySpend.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
-public class TransactionController : ControllerBase
+public class UserController : ControllerBase
 {
-    [HttpGet]
-    public IActionResult Get()
-    {
-        return Ok(new[] { "Product 1", "Product 2" });
-    }
-    
     [HttpPost]
-    public async Task<IActionResult> CreateTransaction()
+    public async Task<IActionResult> CreatePrimaryUser()
     {
-        
         return Ok(new[] { "Product 1", "Product 2" });
     }
 }

@@ -1,22 +1,25 @@
 using FamilySpend.Infra.Entities;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace FamilySpend.Infra.Context;
 
-public class ApplicationDbContext : IdentityDbContext<IdentityUser>
+public class FamilySpendDbContext :  DbContext
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) :
-        base(options)
-    { }
-    
-    public DbSet<FamilyLink> FamilyLinks => Set<FamilyLink>();
+    // The constructor accepts options configuration (like connection strings)
+    public FamilySpendDbContext(DbContextOptions<FamilySpendDbContext> options) : base(options)
+    {
+    }
+
+    // Each DbSet represents a table in the database
+    public DbSet<FamilyLink> FamilyLinks { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder
+            .Entity<FamilyLink>().HasKey(x => x.Id);
+        
         modelBuilder
             .Entity<FamilyLink>().HasIndex(x => x.UserId);
 
