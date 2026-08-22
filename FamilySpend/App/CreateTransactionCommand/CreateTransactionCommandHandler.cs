@@ -1,21 +1,32 @@
 using FamilySpend.Infra.Context;
 using FamilySpend.Infra.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace FamilySpend.App.CreateTransactionCommand;
 
-public class CreateTransactionCommandHandler(FamilySpendDbContext dbContext) : IRequestHandler<CreateTransactionCommand>
+public class CreateTransactionCommandHandler(FamilySpendDbContext dbContext, UserManager<ZipUser> userManager) : IRequestHandler<CreateTransactionCommand>
 {
     public async Task Handle(CreateTransactionCommand request, CancellationToken cancellationToken)
     {
-        // validate category
-        
-        
         if (request.Amount <= 0)
         {
             Console.WriteLine("Amount must be greater than or equal to zero");
             return;
+        }
+
+        var user = await userManager.FindByIdAsync(request.UserId);
+        if (user is not { IsPrimary: true })
+        {
+            // validate category
+            var allowedCategory = await dbContext.UserOrderCategories.Where(x => x.UserId == request.UserId).ToListAsync(cancellationToken);
+            
+            if (allowedCategory.All(x => x.OrderCategoryId != request.OrderCategoryId))
+            {
+                Console.WriteLine("Transaction is not allowed due to order category");
+                return;
+            }
         }
         
         // validate balance

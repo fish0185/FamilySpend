@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using FamilySpend.App.InvitationCommand;
+using FamilySpend.App.RemoveFamilyCommand;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -31,10 +32,13 @@ public class InvitationController : ControllerBase
         return Ok();
     }
     
-    [HttpDelete]
-    public IActionResult RemoveFamily()
+    [HttpPost("remove")]
+    public async Task<IActionResult> RemoveFamily([FromBody]RemoveFamilyCommand command, CancellationToken cancellationToken)
     {
+        var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        command.UserId = nameIdentifier;
         // remove account link
-        return Ok(new[] { "Product 1", "Product 2" });
+        await _mediator.Send(command, cancellationToken);
+        return Ok();
     }
 }

@@ -3,6 +3,7 @@ using System;
 using FamilySpend.Infra.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FamilySpend.Persistence.Migrations
 {
     [DbContext(typeof(FamilySpendDbContext))]
-    partial class FamilySpendDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260822231218_update")]
+    partial class update
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -184,9 +187,6 @@ namespace FamilySpend.Persistence.Migrations
 
                     b.Property<DateTimeOffset?>("LastModified")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("OrderCategoryId")
-                        .HasColumnType("integer");
 
                     b.Property<string>("UserId")
                         .IsRequired()
