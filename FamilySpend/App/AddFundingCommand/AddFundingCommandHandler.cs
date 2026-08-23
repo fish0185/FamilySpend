@@ -17,10 +17,9 @@ public class AddFundingCommandHandler(UserManager<ZipUser> userManager, FamilySp
         }
         
         var user = await userManager.FindByIdAsync(request.UserId);
-        if (user == null || !user.IsPrimary)
+        if (user is not { IsPrimary: true })
         {
-            Console.WriteLine("User is not primary");
-            return;
+            throw new InvalidOperationException("User is not found or is not primary");
         }
 
         var loan = await dbContext.Loans.Where(l => l.UserId == request.UserId).FirstAsync(cancellationToken);

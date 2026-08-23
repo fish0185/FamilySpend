@@ -12,6 +12,12 @@ public class InvitationCommandHandler(
 {
     public async Task Handle(InvitationCommand request, CancellationToken cancellationToken)
     {
+        var currentUser = await userManager.FindByIdAsync(request.Id);
+        if (currentUser is not { IsPrimary: true })
+        {
+            throw new InvalidOperationException("User not found or not primary user");
+        }
+        
         var user = new ZipUser() { UserName = request.Email, Email = request.Email, IsPrimary = false};
         var result = await userManager.CreateAsync(user, "Test.1234");
         if (!result.Succeeded)

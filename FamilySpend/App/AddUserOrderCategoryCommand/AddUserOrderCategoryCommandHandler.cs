@@ -13,8 +13,7 @@ public class AddUserOrderCategoryCommandHandler(FamilySpendDbContext dbContext, 
         var user = await userManager.FindByIdAsync(request.UserId);
         if (user is not { IsPrimary: true })
         {
-            Console.WriteLine("User is not primary");
-            return;
+            throw new InvalidOperationException("User is not found or is not primary");
         }
         
         var subUser = await userManager.FindByEmailAsync(request.SubAccountEmail);

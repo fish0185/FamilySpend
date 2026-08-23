@@ -11,7 +11,11 @@ public class AllocateFundingCommandHandler(UserManager<ZipUser> userManager, Fam
     public async Task Handle(AllocateFundingCommand request, CancellationToken cancellationToken)
     {
         // validate
-
+        var currentUser = await userManager.FindByIdAsync(request.FromUserId);
+        if (currentUser is not { IsPrimary: true })
+        {
+            throw new InvalidOperationException("User not found or not primary user");
+        }
         
         var toUser = await userManager.FindByEmailAsync(request.ToUserEmail);
         if (toUser == null)

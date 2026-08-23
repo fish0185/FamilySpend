@@ -11,7 +11,12 @@ public class RemoveFamilyCommandHandler(UserManager<ZipUser> userManager, Family
     public async Task Handle(RemoveFamilyCommand request, CancellationToken cancellationToken)
     {
          // validation
-         var user = await userManager.FindByIdAsync(request.UserId);
+         var currentUser = await userManager.FindByIdAsync(request.UserId);
+         if (currentUser is not { IsPrimary: true })
+         {
+             throw new InvalidOperationException("User not found or not primary user");
+         }
+         
          var family = await userManager.FindByEmailAsync(request.RemoveUserEmail);
          if (family == null)
          {
