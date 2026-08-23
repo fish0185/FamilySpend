@@ -30,11 +30,13 @@ public class UserController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<IActionResult> GetCurrentUser(GetCurrentUserCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetCurrentUser(CancellationToken cancellationToken)
     {
         var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-        command.CurrentUserId = nameIdentifier;
-        var response = await _mediator.Send(command, cancellationToken);
+        var response = await _mediator.Send(new GetCurrentUserCommand
+        {
+            CurrentUserId = nameIdentifier
+        }, cancellationToken);
         return Ok(response);
     }
 }
