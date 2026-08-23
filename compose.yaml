@@ -1,0 +1,16 @@
+services:
+  # Database Service
+  db:
+    image: fish0185/familyspenddb
+    container_name: ps
+    restart: always
+    ports:
+      - "55432:5432"
+
+  # API Service
+  api:
+    image: fish0185/familyspend
+    container_name: fs
+    restart: always
+    ports:
+      - "8000:8080"

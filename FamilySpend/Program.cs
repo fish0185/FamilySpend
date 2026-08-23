@@ -4,7 +4,20 @@ using FamilySpend.Infra.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
+var  MyAllowSpecificOrigins = "AllowAll";
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+        policy  =>
+        {
+            policy.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+        });
+});
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -15,7 +28,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<FamilySpendDbContext>(
-    options => options.UseNpgsql("Host=localhost;Port=5432;Database=FamilySpend;Username=postgres;Password=postgres;"));
+    options => options.UseNpgsql("Host=localhost;Port=55432;Database=FamilySpend;Username=postgres;Password=postgres;"));
 
 builder.Services.AddAuthorization();
 builder.Services.AddIdentityApiEndpoints<ZipUser>()
@@ -25,6 +38,8 @@ builder.Services.AddIdentityApiEndpoints<ZipUser>()
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
 var app = builder.Build();
+
+app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthorization();
 
