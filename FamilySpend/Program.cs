@@ -28,7 +28,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<FamilySpendDbContext>(
-    options => options.UseNpgsql("Host=localhost;Port=55432;Database=FamilySpend;Username=postgres;Password=postgres;"));
+    options => options.UseNpgsql("Host=localhost;Port=5432;Database=FamilySpend;Username=postgres;Password=postgres;"));
 
 builder.Services.AddAuthorization();
 builder.Services.AddIdentityApiEndpoints<ZipUser>()
