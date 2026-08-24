@@ -22,8 +22,7 @@ public class InvitationCommandHandler(
         var result = await userManager.CreateAsync(user, "Test.1234");
         if (!result.Succeeded)
         {
-            Console.WriteLine(result.Errors);
-            return;
+            throw new InvalidOperationException(string.Join(",", result.Errors.Select(error => error.Description)));
         }
         
         var newUser = await userManager.FindByEmailAsync(request.Email);

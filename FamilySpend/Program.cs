@@ -1,3 +1,4 @@
+using FamilySpend;
 using FamilySpend.App.InvitationCommand;
 using FamilySpend.Infra.Context;
 using FamilySpend.Infra.Entities;
@@ -18,6 +19,9 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader();
         });
 });
+
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -43,6 +47,11 @@ app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthorization();
 
+// Converts unhandled exceptions into Problem Details responses
+app.UseExceptionHandler();
+
+// Returns the Problem Details response for (empty) non-successful responses
+app.UseStatusCodePages();
 // For API routing
 app.MapControllers(); 
 app.MapIdentityApi<ZipUser>();

@@ -11,7 +11,11 @@ public class GetCategoriesCommandHandler(FamilySpendDbContext dbContext) : IRequ
         var categories = await dbContext.OrderCategories.ToListAsync(cancellationToken);
         return new GetCategoriesResponse
         {
-            Categories = categories.Select(x => x.Name).ToArray()
+            Categories = categories.Select(x => new Category
+            {
+                Id = x.Id,
+                CategoryName = x.Name
+            }).ToArray()
         };
     }
 }

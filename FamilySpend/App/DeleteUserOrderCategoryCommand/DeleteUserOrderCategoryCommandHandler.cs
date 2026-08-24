@@ -19,22 +19,19 @@ public class DeleteUserOrderCategoryCommandHandler(FamilySpendDbContext dbContex
         var subUser = await userManager.FindByEmailAsync(request.SubAccountEmail);
         if (subUser is not { IsPrimary: false })
         {
-            Console.WriteLine("User is not found");
-            return;
+            throw new InvalidOperationException("User is not found or is primary");
         }
         
         var category = await dbContext.OrderCategories.Where(x => x.Name == request.CategoryName).FirstOrDefaultAsync(cancellationToken);
         if (category is null)
         {
-            Console.WriteLine("Category is not found");
-            return;
+            throw new InvalidOperationException("Category is not found");
         }
 
         var userOrderCategory = dbContext.UserOrderCategories.FirstOrDefault(x => x.OrderCategoryId == category.Id && x.UserId == subUser.Id);
         if (userOrderCategory is null)
         {
-            Console.WriteLine("UserOrderCategory is not found");
-            return;
+            throw new InvalidOperationException("UserOrderCategory is not found");
         }
         
         dbContext.UserOrderCategories.Remove(userOrderCategory);

@@ -20,13 +20,13 @@ public class RemoveFamilyCommandHandler(UserManager<ZipUser> userManager, Family
          var family = await userManager.FindByEmailAsync(request.RemoveUserEmail);
          if (family == null)
          {
-             return;
+             throw new InvalidOperationException("User not found");
          }
          
          var link = await dbContext.FamilyLinks.Where(x=>x.UserId == request.UserId && family.Id == x.FamilyUserId).FirstOrDefaultAsync(cancellationToken);
          if (link == null)
          {
-             return;
+             throw new InvalidOperationException("link not found");
          }
          
          // reset balance

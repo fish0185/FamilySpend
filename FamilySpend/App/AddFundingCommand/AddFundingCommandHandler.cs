@@ -12,8 +12,7 @@ public class AddFundingCommandHandler(UserManager<ZipUser> userManager, FamilySp
     {
         if (request.Amount <= 0 )
         {
-            Console.WriteLine("Amount must be greater than zero");
-            return;
+            throw new InvalidOperationException("Amount must be greater than zero");
         }
         
         var user = await userManager.FindByIdAsync(request.UserId);

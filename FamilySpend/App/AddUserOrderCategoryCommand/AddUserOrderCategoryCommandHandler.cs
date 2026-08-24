@@ -19,15 +19,13 @@ public class AddUserOrderCategoryCommandHandler(FamilySpendDbContext dbContext, 
         var subUser = await userManager.FindByEmailAsync(request.SubAccountEmail);
         if (subUser is not { IsPrimary: false })
         {
-            Console.WriteLine("User is not found");
-            return;
+            throw new InvalidOperationException("User is not found or is primary");
         }
         
         var category = await dbContext.OrderCategories.Where(x => x.Name == request.CategoryName).FirstOrDefaultAsync(cancellationToken);
         if (category is null)
         {
-            Console.WriteLine("Category is not found");
-            return;
+            throw new InvalidOperationException("Category not found");
         }
 
         dbContext.UserOrderCategories.Add(new UserOrderCategory

@@ -20,15 +20,14 @@ public class AllocateFundingCommandHandler(UserManager<ZipUser> userManager, Fam
         var toUser = await userManager.FindByEmailAsync(request.ToUserEmail);
         if (toUser == null)
         {
-            return;
+            throw new InvalidOperationException($"User not found {request.ToUserEmail}");
         }
         
         var links = await dbContext.FamilyLinks.Where( x=> x.UserId == request.FromUserId).ToListAsync(cancellationToken);
         var link = links.FirstOrDefault( x => x.FamilyUserId == toUser.Id);
         if (link == null)
         {
-            Console.WriteLine("no link found");
-            return;
+            throw new InvalidOperationException("Link not found");
         }
         
         var fromLoan = await dbContext.Loans.Where(x => x.UserId == request.FromUserId).FirstAsync(cancellationToken);
@@ -37,11 +36,9 @@ public class AllocateFundingCommandHandler(UserManager<ZipUser> userManager, Fam
         switch (request.Amount)
         {
             case > 0 when fromLoan.Balance < request.Amount:
-                Console.WriteLine("not enough money main account");
-                return;
+                throw new InvalidOperationException("not enough money main account");
             case < 0 when toLoan.Balance < -request.Amount:
-                Console.WriteLine("not enough money main sub-account");
-                return;
+                throw new InvalidOperationException("not enough money account");
         }
 
         fromLoan.Balance -= request.Amount;

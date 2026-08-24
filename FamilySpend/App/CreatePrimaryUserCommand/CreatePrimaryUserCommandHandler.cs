@@ -16,8 +16,7 @@ public class CreatePrimaryUserCommandHandler(UserManager<ZipUser> userManager, F
         var result = await userManager.CreateAsync(user, request.Password);
         if (!result.Succeeded)
         {
-            Console.WriteLine(result.Errors);
-            return;
+            throw new InvalidOperationException(string.Join(",", result.Errors.Select(error => error.Description)));
         }
 
         var newUser = await userManager.FindByEmailAsync(request.Email);

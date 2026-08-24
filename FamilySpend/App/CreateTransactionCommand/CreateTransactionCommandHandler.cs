@@ -12,8 +12,7 @@ public class CreateTransactionCommandHandler(FamilySpendDbContext dbContext, Use
     {
         if (request.Amount <= 0)
         {
-            Console.WriteLine("Amount must be greater than or equal to zero");
-            return;
+            throw new InvalidOperationException("Amount must be greater than or equal to zero");
         }
 
         var user = await userManager.FindByIdAsync(request.UserId);
@@ -24,8 +23,7 @@ public class CreateTransactionCommandHandler(FamilySpendDbContext dbContext, Use
             
             if (allowedCategory.All(x => x.OrderCategoryId != request.OrderCategoryId))
             {
-                Console.WriteLine("Transaction is not allowed due to order category");
-                return;
+                throw new InvalidOperationException("Transaction is not allowed due to order category");
             }
         }
         
