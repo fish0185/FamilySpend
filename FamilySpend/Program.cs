@@ -9,6 +9,9 @@ var  MyAllowSpecificOrigins = "AllowAll";
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
@@ -19,9 +22,6 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader();
         });
 });
-
-builder.Services.AddProblemDetails();
-builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -36,6 +36,7 @@ builder.Services.AddDbContext<FamilySpendDbContext>(
 
 builder.Services.AddAuthorization();
 builder.Services.AddIdentityApiEndpoints<ZipUser>()
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<FamilySpendDbContext>();
 
 // Create and configure mediator
@@ -43,12 +44,14 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Progr
 
 var app = builder.Build();
 
+// Converts unhandled exceptions into Problem Details responses
+app.UseExceptionHandler();
+app.UseStatusCodeHandler(); 
 app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthorization();
 
-// Converts unhandled exceptions into Problem Details responses
-app.UseExceptionHandler();
+
 
 // Returns the Problem Details response for (empty) non-successful responses
 app.UseStatusCodePages();

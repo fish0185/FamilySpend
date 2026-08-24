@@ -26,6 +26,7 @@ public class OrderCategoryController(IMediator mediator) : ControllerBase
     }
     
     [HttpPost("user")]
+    [Authorize(Roles = "PrimaryUser")]
     public async Task<IActionResult> SetUserOrderCategories(AddUserOrderCategoryCommand command, CancellationToken cancellationToken)
     {
         var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier).Value;
@@ -35,6 +36,7 @@ public class OrderCategoryController(IMediator mediator) : ControllerBase
     }
     
     [HttpDelete("user")]
+    [Authorize(Roles = "PrimaryUser")]
     public async Task<IActionResult> RemoveUserOrderCategories([FromQuery]string email, [FromQuery] string category, CancellationToken cancellationToken)
     {
         var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier).Value;

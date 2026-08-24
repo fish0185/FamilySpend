@@ -9,7 +9,7 @@ namespace FamilySpend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
+[Authorize(Roles = "PrimaryUser")]
 public class FundingController(IMediator mediator) : ControllerBase
 {
     [HttpPost("allocate")]
