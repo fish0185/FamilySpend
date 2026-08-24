@@ -31,8 +31,9 @@ builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+var connectionString = builder.Configuration.GetConnectionString("AppDb");
 builder.Services.AddDbContext<FamilySpendDbContext>(
-    options => options.UseNpgsql("Host=localhost;Port=5432;Database=FamilySpend;Username=postgres;Password=postgres;"));
+    options => options.UseNpgsql(connectionString));
 
 builder.Services.AddAuthorization();
 builder.Services.AddIdentityApiEndpoints<ZipUser>()
